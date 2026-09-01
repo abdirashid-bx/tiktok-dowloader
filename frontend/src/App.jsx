@@ -1,45 +1,82 @@
-import { useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import Privy from "./privy";
 import Termsand from "./Termsand";
 import Contactus from "./Contactus";
+import StructuredData from "./StructuredData";
 
 const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route
-        path="/privacy"
-        element={
-          <PageLayout>
-            <Privy />
-          </PageLayout>
-        }
-      />
-      <Route
-        path="/terms"
-        element={
-          <PageLayout>
-            <Termsand />
-          </PageLayout>
-        }
-      />
-      <Route
-        path="/contact"
-        element={
-          <PageLayout>
-            <Contactus />
-          </PageLayout>
-        }
-      />
-    </Routes>
+    <>
+      <StructuredData />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/privacy"
+          element={
+            <PageLayout>
+              <Privy />
+            </PageLayout>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <PageLayout>
+              <Termsand />
+            </PageLayout>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <PageLayout>
+              <Contactus />
+            </PageLayout>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
 function PageLayout({ children }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    const pageConfig = {
+      "/": {
+        title: "TikDownloader - Free TikTok Video Downloader Without Watermark",
+        description: "Download TikTok videos without watermark for free. Fast, easy, and secure. Works on all devices.",
+      },
+      "/privacy": {
+        title: "Privacy Policy - TikDownloader",
+        description: "Read our privacy policy to understand how we protect your data.",
+      },
+      "/terms": {
+        title: "Terms & Conditions - TikDownloader",
+        description: "Review our terms and conditions for using TikDownloader.",
+      },
+      "/contact": {
+        title: "Contact Us - TikDownloader",
+        description: "Get in touch with our support team for help or questions.",
+      },
+    };
+
+    const config = pageConfig[location.pathname] || pageConfig["/"];
+    document.title = config.title;
+
+    const descMeta = document.querySelector("meta[name='description']");
+    if (descMeta) {
+      descMeta.setAttribute("content", config.description);
+    }
+
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur-sm">
