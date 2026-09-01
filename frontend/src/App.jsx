@@ -1,11 +1,83 @@
- 
- 
 import { useState } from "react";
+import { Link, Route, Routes } from "react-router-dom";
+import Privy from "./privy";
+import Termsand from "./Termsand";
+import Contactus from "./Contactus";
 
 const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:500";
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
 
 export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route
+        path="/privacy"
+        element={
+          <PageLayout>
+            <Privy />
+          </PageLayout>
+        }
+      />
+      <Route
+        path="/terms"
+        element={
+          <PageLayout>
+            <Termsand />
+          </PageLayout>
+        }
+      />
+      <Route
+        path="/contact"
+        element={
+          <PageLayout>
+            <Contactus />
+          </PageLayout>
+        }
+      />
+    </Routes>
+  );
+}
+
+function PageLayout({ children }) {
+  return (
+    <div className="min-h-screen bg-slate-950 text-white">
+      <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur-sm">
+        <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
+          <Link to="/" className="flex items-center gap-3 text-base font-bold tracking-tight sm:text-lg">
+            <img
+              src="/logo.png"
+              alt="TikDownloader logo"
+              className="h-8 w-8 rounded-full object-cover ring-2 ring-cyan-400/15"
+            />
+            <span>
+              Tik<span className="text-cyan-400">Downloader</span>
+            </span>
+          </Link>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-300 sm:gap-5 sm:text-sm">
+            <Link to="/" className="transition hover:text-white">
+              Home
+            </Link>
+            <Link to="/privacy" className="transition hover:text-white">
+              Privacy
+            </Link>
+            <Link to="/terms" className="transition hover:text-white">
+              Terms
+            </Link>
+            <Link to="/contact" className="transition hover:text-white">
+              Contact
+            </Link>
+          </div>
+        </nav>
+      </header>
+
+      <main className="px-3 py-10 sm:px-6 sm:py-16">{children}</main>
+    </div>
+  );
+}
+
+function HomePage() {
   const [url, setUrl] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
@@ -57,12 +129,10 @@ export default function App() {
       setMessage("Your video is ready.");
 
       setTimeout(() => {
-        document
-          .getElementById("download-result")
-          ?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
+        document.getElementById("download-result")?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
       }, 100);
     } catch (err) {
       setStatus("error");
@@ -103,12 +173,10 @@ export default function App() {
       setMessage("Video download started.");
     } catch {
       const link = document.createElement("a");
-
       link.href = videoUrl;
       link.download = filename;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -128,14 +196,18 @@ export default function App() {
     }
   };
 
+  const handleClearUrl = () => {
+    setUrl("");
+    setStatus("idle");
+    setMessage("");
+    setVideoUrl("");
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur-sm">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
-          <a
-            href="/"
-            className="flex items-center gap-3 text-lg font-bold tracking-tight sm:text-xl"
-          >
+        <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
+          <Link to="/" className="flex items-center gap-3 text-base font-bold tracking-tight sm:text-lg md:text-xl">
             <img
               src="/logo.png"
               alt="TikDownloader logo"
@@ -144,34 +216,26 @@ export default function App() {
             <span>
               Tik<span className="text-cyan-400">Downloader</span>
             </span>
-          </a>
+          </Link>
 
-          <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
-            <a
-              href="#how-it-works"
-              className="transition hover:text-white"
-            >
+          <div className="order-3 flex w-full justify-center gap-3 text-[11px] text-slate-300 sm:gap-4 sm:text-xs md:order-none md:w-auto md:justify-end md:text-sm">
+            <a href="#how-it-works" className="transition hover:text-white">
               How It Works
             </a>
-
-            <a
-              href="/about"
-              className="transition hover:text-white"
-            >
-              About
-            </a>
-
-            <a
-              href="/contact"
-              className="transition hover:text-white"
-            >
+            <Link to="/privacy" className="transition hover:text-white">
+              Privacy
+            </Link>
+            <Link to="/terms" className="transition hover:text-white">
+              Terms
+            </Link>
+            <Link to="/contact" className="transition hover:text-white">
               Contact
-            </a>
+            </Link>
           </div>
 
           <a
             href="#downloader"
-            className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium transition hover:bg-white/10 md:hidden"
+            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium transition hover:bg-white/10 md:hidden"
           >
             Download
           </a>
@@ -179,28 +243,22 @@ export default function App() {
       </header>
 
       <main>
-        <section
-          id="downloader"
-          className="px-4 pb-16 pt-16 sm:px-6 sm:pb-24 sm:pt-24"
-        >
+        <section id="downloader" className="px-4 pb-14 pt-12 sm:px-6 sm:pb-24 sm:pt-20">
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-5 inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-xs font-medium text-cyan-300 sm:text-sm">
+            <div className="mb-5 inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[10px] font-medium text-cyan-300 sm:px-4 sm:text-xs">
               Fast & Simple Video Downloader
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl">
               Download TikTok Videos
-              <span className="block text-cyan-400">
-                Easily
-              </span>
+              <span className="block text-cyan-400">Easily</span>
             </h1>
 
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
-              Paste a TikTok video link below and get your
-              video ready to download in seconds.
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base sm:leading-7 md:text-lg">
+              Paste a TikTok video link below and get your video ready to download in seconds.
             </p>
 
-            <div className="mx-auto mt-9 max-w-3xl">
+            <div className="mx-auto mt-8 max-w-3xl sm:mt-9">
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-2xl sm:p-3">
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <input
@@ -212,34 +270,37 @@ export default function App() {
                         handleResolve();
                       }
                     }}
-                    disabled={
-                      status === "loading" ||
-                      status === "downloading"
-                    }
+                    disabled={status === "loading" || status === "downloading"}
                     placeholder="Paste TikTok URL here..."
                     aria-label="TikTok video URL"
-                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-900 px-4 py-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/10 sm:text-base"
+                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/10 sm:py-4 sm:text-base"
                   />
 
-                  <button
-                    type="button"
-                    onClick={handleResolve}
-                    disabled={
-                      status === "loading" ||
-                      status === "downloading"
-                    }
-                    className="rounded-xl bg-cyan-400 px-6 py-4 text-sm font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[140px] sm:text-base"
-                  >
-                    {status === "loading"
-                      ? "Processing..."
-                      : "Download"}
-                  </button>
+                  <div className="flex gap-2 sm:min-w-[220px]">
+                    <button
+                      type="button"
+                      onClick={handleResolve}
+                      disabled={status === "loading" || status === "downloading"}
+                      className="flex-1 rounded-xl bg-cyan-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60 sm:px-6 sm:py-4 sm:text-base"
+                    >
+                      {status === "loading" ? "Processing..." : "Download"}
+                    </button>
+
+                    {url && (
+                      <button
+                        type="button"
+                        onClick={handleClearUrl}
+                        className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs font-medium text-slate-300 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-sm"
+                        aria-label="Clear URL"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <p className="mt-3 text-xs text-slate-500">
-                No account required.
-              </p>
+              <p className="mt-3 text-xs text-slate-500">No account required.</p>
             </div>
 
             {status === "error" && (
@@ -258,10 +319,7 @@ export default function App() {
               >
                 <div className="flex items-center justify-center gap-3">
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-600 border-t-cyan-400" />
-
-                  <span className="text-sm text-slate-300">
-                    Processing your video...
-                  </span>
+                  <span className="text-sm text-slate-300">Processing your video...</span>
                 </div>
               </div>
             )}
@@ -269,10 +327,7 @@ export default function App() {
         </section>
 
         {videoUrl && status !== "error" && (
-          <section
-            id="download-result"
-            className="scroll-mt-10 px-4 pb-20 sm:px-6"
-          >
+          <section id="download-result" className="scroll-mt-10 px-4 pb-20 sm:px-6">
             <div className="mx-auto max-w-3xl">
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl">
                 <div className="border-b border-white/10 px-5 py-4 sm:px-6">
@@ -282,13 +337,8 @@ export default function App() {
                     </div>
 
                     <div>
-                      <h2 className="font-semibold">
-                        Your video is ready
-                      </h2>
-
-                      <p className="text-sm text-slate-400">
-                        You can preview it before downloading.
-                      </p>
+                      <h2 className="font-semibold">Your video is ready</h2>
+                      <p className="text-sm text-slate-400">You can preview it before downloading.</p>
                     </div>
                   </div>
                 </div>
@@ -307,10 +357,7 @@ export default function App() {
 
                 <div className="p-5 sm:p-6">
                   <div className="mb-5">
-                    <p className="break-all text-sm font-medium text-white">
-                      {filename}
-                    </p>
-
+                    <p className="break-all text-sm font-medium text-white">{filename}</p>
                     <p className="mt-1 text-xs text-slate-500">
                       Click the button below to download the video.
                     </p>
@@ -322,16 +369,11 @@ export default function App() {
                     disabled={status === "downloading"}
                     className="w-full rounded-xl bg-cyan-400 px-6 py-4 text-sm font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
                   >
-                    {status === "downloading"
-                      ? "Starting download..."
-                      : "Download this video"}
+                    {status === "downloading" ? "Starting download..." : "Download this video"}
                   </button>
 
                   {message && status === "success" && (
-                    <p
-                      className="mt-4 text-center text-sm text-emerald-400"
-                      aria-live="polite"
-                    >
+                    <p className="mt-4 text-center text-sm text-emerald-400" aria-live="polite">
                       {message}
                     </p>
                   )}
@@ -341,22 +383,15 @@ export default function App() {
           </section>
         )}
 
-        <section
-          id="how-it-works"
-          className="border-t border-white/10 px-4 py-20 sm:px-6"
-        >
+        <section id="how-it-works" className="border-t border-white/10 px-4 py-20 sm:px-6">
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
               <p className="text-sm font-semibold uppercase tracking-wider text-cyan-400">
                 Simple Process
               </p>
-
-              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-                How It Works
-              </h2>
-
+              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">How It Works</h2>
               <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-                Get your video ready in just a few simple steps.
+                We make it easy to turn a TikTok link into a downloadable video file using a simple and safe process.
               </p>
             </div>
 
@@ -364,40 +399,54 @@ export default function App() {
               <Step
                 number="01"
                 title="Paste Your Link"
-                description="Copy a supported TikTok video link and paste it into the downloader."
+                description="Copy a supported TikTok video URL and paste it into the downloader field above."
               />
-
               <Step
                 number="02"
                 title="Process the Video"
-                description="Click Download and wait while your video is processed."
+                description="The app sends the URL to our backend service, which retrieves the media file and prepares it for playback."
               />
-
               <Step
                 number="03"
                 title="Download"
-                description="Preview the result and click Download this video to save it."
+                description="Once the video is ready, you can preview it and save it to your device with one click."
               />
+            </div>
+
+            <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-slate-300">
+              <h3 className="text-xl font-semibold text-white">How downloading works</h3>
+              <p className="mt-3 leading-7 text-slate-400">
+                The downloader reads the TikTok link you enter, requests the video metadata from the source,
+                and prepares a downloadable file for your browser. After processing, the result appears in a preview player,
+                and you can choose to save the file directly to your device. This keeps the process quick, simple, and user-friendly.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className="px-4 py-20 sm:px-6">
+        <section id="faq" className="border-t border-white/10 px-4 py-20 sm:px-6">
           <div className="mx-auto max-w-5xl">
-            <div className="grid gap-5 sm:grid-cols-3">
-              <Feature
-                title="No Account"
-                description="Use the downloader without creating an account."
-              />
+            <div className="text-center">
+              <p className="text-sm font-semibold uppercase tracking-wider text-cyan-400">FAQ</p>
+              <h2 className="mt-3 text-3xl font-bold">Questions & Answers</h2>
+            </div>
 
-              <Feature
-                title="Mobile Friendly"
-                description="Designed to work smoothly on phones, tablets, and computers."
+            <div className="mt-10 space-y-5">
+              <FaqItem
+                question="How do I use the downloader?"
+                answer="Paste a valid TikTok video URL in the input box and click the Download button. The app will process the link and show a preview before downloading."
               />
-
-              <Feature
-                title="Simple Interface"
-                description="Paste your link, preview the result, and download."
+              <FaqItem
+                question="Does it require an account?"
+                answer="No. You can use the downloader without creating an account or signing in."
+              />
+              <FaqItem
+                question="Is this download process safe?"
+                answer="The service is designed to handle short download workflows securely. Always use the tool responsibly and respect content ownership rules."
+              />
+              <FaqItem
+                question="Why is my video not downloading?"
+                answer="The video may be unavailable, the link may be invalid, or the source may temporarily restrict access. Try again with a valid public URL."
               />
             </div>
           </div>
@@ -410,40 +459,24 @@ export default function App() {
             <p className="font-bold">
               Tik<span className="text-cyan-400">Downloader</span>
             </p>
-
             <p className="mt-2 max-w-sm text-sm text-slate-500">
               A simple online video downloading tool.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-400">
-            <a
-              href="/about"
-              className="transition hover:text-white"
-            >
-              About
+            <a href="#how-it-works" className="transition hover:text-white">
+              How It Works
             </a>
-
-            <a
-              href="/contact"
-              className="transition hover:text-white"
-            >
-              Contact
-            </a>
-
-            <a
-              href="/terms"
-              className="transition hover:text-white"
-            >
+            <Link to="/privacy" className="transition hover:text-white">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="transition hover:text-white">
               Terms
-            </a>
-
-            <a
-              href="/privacy"
-              className="transition hover:text-white"
-            >
-              Privacy
-            </a>
+            </Link>
+            <Link to="/contact" className="transition hover:text-white">
+              Contact
+            </Link>
           </div>
         </div>
 
@@ -458,30 +491,19 @@ export default function App() {
 function Step({ number, title, description }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-      <div className="text-sm font-bold text-cyan-400">
-        {number}
-      </div>
-
-      <h3 className="mt-4 text-lg font-semibold">
-        {title}
-      </h3>
-
-      <p className="mt-2 text-sm leading-6 text-slate-400">
-        {description}
-      </p>
+      <div className="text-sm font-bold text-cyan-400">{number}</div>
+      <h3 className="mt-4 text-lg font-semibold">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
     </div>
   );
 }
 
-function Feature({ title, description }) {
+function FaqItem({ question, answer }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-      <h3 className="font-semibold">{title}</h3>
-
-      <p className="mt-2 text-sm leading-6 text-slate-400">
-        {description}
-      </p>
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+      <h3 className="text-lg font-semibold text-white">{question}</h3>
+      <p className="mt-3 leading-7 text-slate-400">{answer}</p>
     </div>
   );
 }
- 
+
