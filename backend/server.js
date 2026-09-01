@@ -18,7 +18,7 @@ if (!fs.existsSync(TEMP_DIR)) {
   fs.mkdirSync(TEMP_DIR, { recursive: true });
 }
 
-const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http://127.0.0.1:5173,https://tiktok-dowloader-seven.vercel.app")
+const allowedOrigins = (process.env.CORS_ORIGIN || "https://www.wadajirict.com/")
   .split(",")
   .map((origin) => origin.trim().replace(/\/$/, ""))
   .filter(Boolean);
