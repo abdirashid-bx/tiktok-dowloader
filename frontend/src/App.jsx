@@ -6,7 +6,7 @@ import Contactus from "./Contactus";
 import StructuredData from "./StructuredData";
 
 const BACKEND_URL =
-  import.meta.env.thebackendurl || "http://localhost:5001";
+  import.meta.env.viteback_endsss || "https://tiktok-dowloader-seven.vercel.app";
 
 export default function App() {
   return (
