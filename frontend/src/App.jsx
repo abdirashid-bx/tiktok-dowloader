@@ -6,7 +6,7 @@ import Contactus from "./Contactus";
 import StructuredData from "./StructuredData";
 
 const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+  import.meta.env.thebackendurl || "http://localhost:5001";
 
 export default function App() {
   return (

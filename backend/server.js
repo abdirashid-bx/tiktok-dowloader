@@ -18,7 +18,15 @@ if (!fs.existsSync(TEMP_DIR)) {
   fs.mkdirSync(TEMP_DIR, { recursive: true });
 }
 
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+
+app.use(cors({
+  origin: corsOrigin,
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json({ limit: "2mb" }));
 
 const downloadLimiter = rateLimit({
@@ -195,6 +203,12 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`TikTok downloader backend running on http://localhost:${PORT}`);
-});
+// Export for Vercel serverless deployment
+module.exports = app;
+
+// For local development
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`TikTok downloader backend running on http://localhost:${PORT}`);
+  });
+}
